@@ -1,0 +1,29 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Icon
+.Spotlight-V100
+.Trashes
+
+# Python cache and environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+!macos/crossover_patch/**/*.so
+.Python
+venv/
+.venv/
+env/
+ENV/
+
+# Logs, dumps and temporary files
+*.log
+*.dmp
+*.tmp
+*.bak
+*.orig
+*.swp
+*~

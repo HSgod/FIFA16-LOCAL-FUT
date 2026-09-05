@@ -40,9 +40,19 @@ echo "Wykryto butelke CrossOver: $TARGET_BOTTLE"
 echo "Wykryto folder gry FIFA 16: $GAME_DIR"
 echo ""
 
-echo "1. Konfiguracja cl.ini dla silnika gry FIFA 16..."
+BOTTLE_NAME=$(basename "$TARGET_BOTTLE")
+
+echo "1. Instalacja patchy CrossOver (Apple Silicon / Denuvo boot fix)..."
+if [ -f "macos/crossover_patch/install_patch.sh" ]; then
+    bash macos/crossover_patch/install_patch.sh --bottle "$BOTTLE_NAME" || {
+        echo "⚠️ Nie udalo sie zainstalowac patcha CrossOver automatycznie."
+        echo "   Mozesz uruchomic instalator recznie: ./macos/crossover_patch/install_patch.sh"
+    }
+fi
+
+echo ""
+echo "2. Konfiguracja cl.ini dla silnika gry FIFA 16..."
 cp -f payload/cl.ini "$GAME_DIR/"
-cp -f payload/ItsAMe_Origin.dll "$GAME_DIR/" 2>/dev/null || true
 
 # Usuniecie starego dinput8.dll (powodujacego Failed to initialize ProtoSSL)
 if [ -f "$GAME_DIR/dinput8.dll" ]; then
@@ -51,7 +61,7 @@ if [ -f "$GAME_DIR/dinput8.dll" ]; then
 fi
 
 echo ""
-echo "2. Konfiguracja przekierowan domen EA w butelce CrossOver (etc/hosts)..."
+echo "3. Konfiguracja przekierowan domen EA w butelce CrossOver (etc/hosts)..."
 BOTTLE_HOSTS="$TARGET_BOTTLE/drive_c/windows/system32/drivers/etc/hosts"
 mkdir -p "$(dirname "$BOTTLE_HOSTS")"
 cat << 'EOF' > "$BOTTLE_HOSTS"
@@ -70,7 +80,7 @@ EOF
 echo "   Zaktualizowano plik hosts w butelce CrossOver!"
 
 echo ""
-echo "3. Czyszczenie starych override w rejestrze Wine (user.reg)..."
+echo "4. Czyszczenie starych override w rejestrze Wine (user.reg)..."
 USER_REG="$TARGET_BOTTLE/user.reg"
 if [ -f "$USER_REG" ]; then
     python3 -c '
